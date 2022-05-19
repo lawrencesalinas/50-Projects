@@ -1,4 +1,8 @@
 const qouteContainer = document.getElementById('qoute-container')
+const qouteText = document.getElementById('qoute')
+const authorText = document.getElementById('author')
+const twitterBtn = document.getElementById('twitter')
+const newQouteBtn = document.getElementById('new-qoute')
 
 let apiQoutes = []
 
@@ -6,7 +10,21 @@ let apiQoutes = []
 function newQoute() {
   // Pick a random qoute
   const qoute = apiQoutes[Math.floor(Math.random() * apiQoutes.length)]
-  console.log(qoute)
+  // Check if Author filed is blank replace it with 'Unknown'
+  if (!qoute.author) {
+    authorText.innerText = 'Unknowm'
+  } else {
+    authorText.innerText = qoute.author
+  }
+
+  // Check Qoute length to determine the styling
+  if (qoute.text.length > 120) {
+    qouteText.classList.add('long-qoute')
+  } else {
+    qouteText.classList.remove('long-qoute')
+  }
+
+  qouteText.textContent = qoute.text
 }
 
 // Get qoutes from API
@@ -21,10 +39,15 @@ async function getQoutes() {
   }
 }
 
-const button = document.getElementById('new-qoute')
-
-const getNewQoute = () => {
-  button.addEventListener('click', getQoutes())
+// Tweet Qoute
+function tweetQoute() {
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${qouteText.textContent} - ${authorText.textContent}`
+  window.open(twitterUrl, '_blank')
 }
 
-getNewQoute()
+// Event Listeners
+newQouteBtn.addEventListener('click', newQoute)
+twitterBtn.addEventListener('click', tweetQoute)
+
+// On Laod
+getQoutes()
